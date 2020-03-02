@@ -1,45 +1,30 @@
-import React from 'react'
+import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Header = (props) => <h1>{props.course}</h1>;
-
-const Part = (props) => <p>{props.part} {props.exercises}</p>;
-
-const Content = (props) => {
-    return (<>
-        <Part part={props.parts[0].name} exercises={props.parts[0].exercises} />
-        <Part part={props.parts[1].name} exercises={props.parts[1].exercises} />
-        <Part part={props.parts[2].name} exercises={props.parts[2].exercises} />
-    </>)
-}
-
-const Total = (props) => <p>Number of exercises {props.parts[0].exercises + props.parts[1].exercises + props.parts[2].exercises}</p>;
-
 const App = () => {
-    const course = {
-        name: 'Half Stack application development',
-        parts: [{
-            name: 'Fundamentals of React',
-            exercises: 10
-        },
-        {
-            name: 'Using props to pass data',
-            exercises: 7
-        },
-        {
-            name: 'State of a component',
-            exercises: 14
-        }]
-    }
+  // save clicks of each button to own state
+  const [good, setGood] = useState(0)
+  const [neutral, setNeutral] = useState(0)
+  const [bad, setBad] = useState(0)
 
-    return (
-        <div>
-            <Header course={course.name} />
-            <Content parts={course.parts} />
-            <Total parts={course.parts} />
+  const handleGood = () => setGood(good + 1)
+  const handleNeutral = () => setNeutral(neutral + 1)
+  const handleBad = () => setBad(bad + 1)
 
-        </div>
-    )
+  return (
+    <div>
+      <h1>give feedback</h1>
+      <button onClick={handleGood}>good</button> 
+      <button onClick={handleNeutral}>neutral</button>
+      <button onClick={handleBad}>bad</button>
+      <h1>statistics</h1>
+      <div>good {good}</div>
+      <div>neutral {neutral}</div>
+      <div>bad {bad}</div>
+    </div>
+  )
 }
 
-ReactDOM.render(<App />, document.getElementById('root'))
+ReactDOM.render(<App />, 
+  document.getElementById('root')
+)
