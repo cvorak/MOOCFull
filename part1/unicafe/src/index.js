@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Statistic = ({text, value}) => <div>{text} {value}</div>
+const Statistic = ({ text, value }) =>
+    <tr>
+        <td>{text}</td>
+        <td>{value}</td>
+    </tr>
 
 const Statistics = ({ good, neutral, bad, count, getAvg, getPos }) => {
     if (count === 0) {
@@ -16,12 +20,16 @@ const Statistics = ({ good, neutral, bad, count, getAvg, getPos }) => {
     return (
         <>
             <h1>statistics</h1>
-            <Statistic text={'good'} value={good} />
-            <Statistic text={'neutral'} value={neutral} />
-            <Statistic text={'bad'} value={bad} />
-            <Statistic text={'all'} value={count} />
-            <Statistic text={'average'} value={getAvg()} />
-            <Statistic text={'positive'} value={getPos()} />
+            <table>
+                <tbody>
+                    <Statistic text={'good'} value={good} />
+                    <Statistic text={'neutral'} value={neutral} />
+                    <Statistic text={'bad'} value={bad} />
+                    <Statistic text={'all'} value={count} />
+                    <Statistic text={'average'} value={getAvg()} />
+                    <Statistic text={'positive'} value={getPos()} />
+                </tbody>
+            </table>
         </>
     )
 }
