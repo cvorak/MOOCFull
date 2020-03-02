@@ -1,13 +1,14 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
-const Statistics = ({good, neutral, bad, count, getAvg, getPos}) => {
-    
+const Statistic = ({text, value}) => <div>{text} {value}</div>
+
+const Statistics = ({ good, neutral, bad, count, getAvg, getPos }) => {
     if (count === 0) {
         return (
             <>
-            <h1>sttistics</h1>
-            <div>no feedback given</div>
+                <h1>statistics</h1>
+                <div>no feedback given</div>
             </>
         )
     }
@@ -15,12 +16,12 @@ const Statistics = ({good, neutral, bad, count, getAvg, getPos}) => {
     return (
         <>
             <h1>statistics</h1>
-            <div>good {good}</div>
-            <div>neutral {neutral}</div>
-            <div>bad {bad}</div>
-            <div>all {count}</div>
-            <div>average {getAvg()}</div>
-            <div>positive {getPos()}%</div>
+            <Statistic text={'good'} value={good} />
+            <Statistic text={'neutral'} value={neutral} />
+            <Statistic text={'bad'} value={bad} />
+            <Statistic text={'all'} value={count} />
+            <Statistic text={'average'} value={getAvg()} />
+            <Statistic text={'positive'} value={getPos()} />
         </>
     )
 }
@@ -47,7 +48,7 @@ const App = () => {
 
     const getAverage = () => (good - bad) / count
     const getPositive = () => good / count * 100
-    
+
     return (
         <div>
             <h1>give feedback</h1>
