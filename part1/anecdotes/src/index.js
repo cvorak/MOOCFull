@@ -1,6 +1,29 @@
 import React, { useState } from 'react'
 import ReactDOM from 'react-dom'
 
+
+const Button = ({ text, handleClick }) => {
+    return (
+        <button onClick={handleClick}>
+            {text}
+        </button>
+    )
+}
+
+const Anecdote = ({ headerText, anecdote, votes }) => {
+    return (
+        <>
+            <h1>{headerText}</h1>
+            <div>
+                {anecdote}
+            </div>
+            <div>
+                has {votes} votes
+        </div>
+        </>
+    )
+}
+
 const App = (props) => {
     const [selected, setSelected] = useState(0)
     const [votes, setVotes] = useState(new Uint8Array(anecdotes.length))
@@ -18,20 +41,21 @@ const App = (props) => {
 
     return (
         <>
+            <Anecdote
+                headerText={'Anecdote of the day'}
+                anecdote={props.anecdotes[selected]}
+                votes={votes[selected]}
+            />
             <div>
-                {props.anecdotes[selected]}
+                <Button handleClick={handleVote} text={'vote'} />
+                <Button handleClick={handleClick} text={'next anecdote'} />
             </div>
-            <div>
-                has {votes[selected]} votes
-            </div>
-            <div>
-                <button onClick={handleVote}>
-                    vote
-                </button>
-                <button onClick={handleClick}>
-                    next anecdote
-                </button>
-            </div>
+
+            <Anecdote
+                headerText={'Anecdote with most votes'}
+                anecdote={props.anecdotes[votes.indexOf(Math.max(...votes))]}
+                votes={votes[votes.indexOf(Math.max(...votes))]}
+            />
         </>
     )
 }
