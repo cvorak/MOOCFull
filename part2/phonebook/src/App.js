@@ -3,10 +3,14 @@ import './App.css';
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas', number: '12345' }
+    { name: 'Arto Hellas', number: '040-123456' },
+    { name: 'Ada Lovelace', number: '39-44-5323523' },
+    { name: 'Dan Abramov', number: '12-43-234345' },
+    { name: 'Mary Poppendieck', number: '39-23-6423122' }
   ])
   const [newName, setNewName] = useState('')
   const [newNumber, setNewNumber] = useState('')
+  const [filterText, setFilterText] = useState('')
 
   const handleClick = (event) => {
     event.preventDefault()
@@ -14,7 +18,7 @@ const App = () => {
       name: newName,
       number: newNumber
     }
-    
+
     if (persons.map(p => p.name).includes(newName)) {
       alert(`${newName} is already added to the phonebook`)
       return
@@ -32,23 +36,35 @@ const App = () => {
     setNewNumber(event.target.value)
   }
 
-  const rows = () => persons.map(p => <li key={p.name}>{p.name} {p.number}</li>)
+  const handleFilterChange = (event) => {
+    setFilterText(event.target.value)
+  }
+
+  const rows = () => persons
+    .filter(p => p.name.toLowerCase().includes(filterText))
+    .map(p => <li key={p.name}>{p.name} {p.number}</li>)
 
   return (
     <div>
       <h2>Phonebook</h2>
+      <div>
+        filter shown with <input
+          value={filterText}
+          onChange={handleFilterChange}
+        />
+      </div>
       <form>
         <div>
-          name: <input 
+          name: <input
             value={newName}
             onChange={handleInputNameChange}
           />
         </div>
         <div>
-          number: <input 
+          number: <input
             value={newNumber}
             onChange={handleInputNumberChange}
-            />
+          />
         </div>
         <div>
           <button
