@@ -3,14 +3,16 @@ import './App.css';
 
 const App = () => {
   const [persons, setPersons] = useState([
-    { name: 'Arto Hellas' }
+    { name: 'Arto Hellas', number: '12345' }
   ])
   const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
 
   const handleClick = (event) => {
     event.preventDefault()
     const newPersonObj = {
-      name: newName
+      name: newName,
+      number: newNumber
     }
     
     if (persons.map(p => p.name).includes(newName)) {
@@ -22,11 +24,15 @@ const App = () => {
     setNewName('')
   }
 
-  const handleInputChange = (event) => {
+  const handleInputNameChange = (event) => {
     setNewName(event.target.value)
   }
 
-  const rows = () => persons.map(p => <li key={p.name}>{p.name}</li>)
+  const handleInputNumberChange = (event) => {
+    setNewNumber(event.target.value)
+  }
+
+  const rows = () => persons.map(p => <li key={p.name}>{p.name} {p.number}</li>)
 
   return (
     <div>
@@ -35,8 +41,14 @@ const App = () => {
         <div>
           name: <input 
             value={newName}
-            onChange={handleInputChange}
+            onChange={handleInputNameChange}
           />
+        </div>
+        <div>
+          number: <input 
+            value={newNumber}
+            onChange={handleInputNumberChange}
+            />
         </div>
         <div>
           <button
