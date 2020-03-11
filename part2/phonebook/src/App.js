@@ -11,9 +11,11 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
 
+  const baseUrl = 'http://localhost:3001/persons'
+
   useEffect(() => {
     axios
-      .get('http://localhost:3001/persons')
+      .get(baseUrl)
       .then(res => setPersons(res.data))
   }, [])
 
@@ -29,8 +31,12 @@ const App = () => {
       return
     }
 
-    setPersons(persons.concat(newPersonObj))
-    setNewName('')
+    axios
+      .post(baseUrl, newPersonObj)
+      .then(res => {
+        setPersons(persons.concat(res.data))
+        setNewName('')
+      })
   }
 
   const handleInputNameChange = (event) => {
