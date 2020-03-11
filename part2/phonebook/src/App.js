@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
-import axios from 'axios'
 import './App.css'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
+import personService from './services/persons'
 
 const App = () => {
   const [persons, setPersons] = useState([])
@@ -11,12 +11,10 @@ const App = () => {
   const [newNumber, setNewNumber] = useState('')
   const [filterText, setFilterText] = useState('')
 
-  const baseUrl = 'http://localhost:3001/persons'
-
   useEffect(() => {
-    axios
-      .get(baseUrl)
-      .then(res => setPersons(res.data))
+      personService
+        .getAll()
+        .then(returnedPersons => setPersons(returnedPersons))
   }, [])
 
   const handleClick = (event) => {
@@ -31,11 +29,11 @@ const App = () => {
       return
     }
 
-    axios
-      .post(baseUrl, newPersonObj)
-      .then(res => {
-        setPersons(persons.concat(res.data))
+    personService.create(newPersonObj)
+      .then(returnedPerson => {
+        setPersons(persons.concat(returnedPerson))
         setNewName('')
+        setNewNumber('')
       })
   }
 
