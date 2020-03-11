@@ -49,6 +49,15 @@ const App = () => {
     setFilterText(event.target.value)
   }
 
+  const handleDeleteOf = (id) => {
+    if (!window.confirm(`Delete ${persons.find(p => p.id === id).name}`)) 
+      return
+
+    personService
+      .remove(id)
+      .then(setPersons(persons.filter(p => p.id !== id)))
+  }
+
   return (
     <div>
       <h2>Phonebook</h2>
@@ -64,6 +73,7 @@ const App = () => {
       <Persons
         filterText={filterText}
         persons={persons}
+        handleDeleteOf={handleDeleteOf}
       />
     </div>
   )
