@@ -12,9 +12,9 @@ const App = () => {
   const [filterText, setFilterText] = useState('')
 
   useEffect(() => {
-      personService
-        .getAll()
-        .then(returnedPersons => setPersons(returnedPersons))
+    personService
+      .getAll()
+      .then(returnedPersons => setPersons(returnedPersons))
   }, [])
 
   const handleClick = (event) => {
@@ -25,16 +25,25 @@ const App = () => {
     }
 
     if (persons.map(p => p.name).includes(newName)) {
-      alert(`${newName} is already added to the phonebook`)
-      return
-    }
+      if (window.confirm(`${newName} is already added to phonebook, replace the old number with new one?`)) {
+        const id = persons.find(p => p.name === newName).id
+        personService
+          .update(id, newPersonObj)
+          .then(updatedPerson => {
+            setPersons(persons.map(p => p.id === id ? updatedPerson : p ))
+            setNewName('')
+            setNewNumber('')
+          })
+      }
 
-    personService.create(newPersonObj)
-      .then(returnedPerson => {
-        setPersons(persons.concat(returnedPerson))
-        setNewName('')
-        setNewNumber('')
-      })
+    } else {
+      personService.create(newPersonObj)
+        .then(returnedPerson => {
+          setPersons(persons.concat(returnedPerson))
+          setNewName('')
+          setNewNumber('')
+        })
+    }
   }
 
   const handleInputNameChange = (event) => {
@@ -50,7 +59,7 @@ const App = () => {
   }
 
   const handleDeleteOf = (id) => {
-    if (!window.confirm(`Delete ${persons.find(p => p.id === id).name}`)) 
+    if (!window.confirm(`Delete ${persons.find(p => p.id === id).name}`))
       return
 
     personService
