@@ -1,11 +1,11 @@
 import React from 'react'
 
 const Notification = ({message}) => {
-    if (message === null) {
+        if (message === null) {
         return null;
     }
     return (
-        <div className='notification'>
+        <div className={message.substring(0, 3) === 'The' ? 'notification error' : 'notification'} >
             {message}
         </div>
     )

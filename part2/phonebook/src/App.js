@@ -35,6 +35,10 @@ const App = () => {
             setPersons(persons.map(p => p.id === id ? updatedPerson : p ))
             setNewName('')
             setNewNumber('')
+          }).catch(err => {
+          setNotificationMessage(`The note ${newPersonObj.name} does not exist on the server`)
+          setTimeout(() => setNotificationMessage(null), 5000)
+          setPersons(persons.filter(n => n.id !== id))
           })
       }
 
