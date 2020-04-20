@@ -9,7 +9,7 @@ const getAll = () => axios
 const create = (newPerson) => axios
     .post(baseUrl, newPerson)
     .then(res => res.data)
-
+    
 const remove = (id) => axios
     .delete(`${baseUrl}/${id}`)
 

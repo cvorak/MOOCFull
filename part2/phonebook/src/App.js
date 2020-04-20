@@ -32,23 +32,38 @@ const App = () => {
         personService
           .update(id, newPersonObj)
           .then(updatedPerson => {
-            setPersons(persons.map(p => p.id === id ? updatedPerson : p ))
+            setPersons(persons.map(p => p.id === id ? updatedPerson : p))
             setNewName('')
             setNewNumber('')
           }).catch(err => {
-          setNotificationMessage(`The note ${newPersonObj.name} does not exist on the server`)
-          setTimeout(() => setNotificationMessage(null), 5000)
-          setPersons(persons.filter(n => n.id !== id))
+            setNotificationMessage({
+              text: `The person ${newPersonObj.name} does not exist on the server`, 
+              type: 'error'
+            })
+            setTimeout(() => setNotificationMessage(null), 5000)
+            setPersons(persons.filter(n => n.id !== id))
           })
       }
 
     } else {
       personService.create(newPersonObj)
         .then(returnedPerson => {
-          setPersons(persons.concat(returnedPerson))
-          setNewName('')
-          setNewNumber('')
-          setNotificationMessage(`Added ${returnedPerson.name}`)
+          if (returnedPerson) {
+            setPersons(persons.concat(returnedPerson))
+            setNewName('')
+            setNewNumber('')
+            setNotificationMessage({
+              text: `Added ${returnedPerson.name}`,
+              type: 'success'
+          })
+            setTimeout(() => setNotificationMessage(null), 3000)
+          }
+        })
+        .catch(err => {
+          setNotificationMessage({
+            text: err.response.data.error,
+            type: 'error'
+          })
           setTimeout(() => setNotificationMessage(null), 3000)
         })
     }
