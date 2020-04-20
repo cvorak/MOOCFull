@@ -48,13 +48,9 @@ app.get('/api/persons', (req, res) => {
 })
 
 app.get('/api/persons/:id', (req, res) => {
-    const id = Number(req.params.id)
-    const person = persons.find(p => p.id === id)
-    if (person) {
-        res.json(person)
-    } else {
-        res.status(404).end()
-    }
+    Person.findById(req.params.id).then(p => {
+        res.json(p.toJSON())
+    })
 })
 
 app.delete('/api/persons/:id', (req, res) => {
@@ -79,15 +75,14 @@ app.post('/api/persons', (req, res) => {
         return res.status(400).json({error: 'name must be unique'})
     }
     
-    const person = {
+    const person = new Person({
         number: body.number,
         name: body.name,
-        id: Math.floor(Math.random() * 10000)
-    }
+    })
 
-    persons = persons.concat(person)
-
-    res.json(body)
+    person.save().then(savedPeson => {
+        res.json(savedPeson.toJSON())
+    })
 })
 
 
