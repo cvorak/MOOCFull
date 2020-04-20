@@ -37,8 +37,11 @@ let persons = [
 
 
 app.get('/info', (req, res) => {
-    const numOfPeople = persons.length
-    res.send(`<p>Phonebook has info for ${persons.length} people</p><p>${new Date()}</p>`)
+    Person.find({}).count((err, result) => {
+
+        res.send(`<p>Phonebook has info for ${result} people</p><p>${new Date()}</p>`)
+    })
+    
 })
 
 app.get('/api/persons', (req, res) => {
