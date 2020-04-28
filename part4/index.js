@@ -9,6 +9,12 @@ const Blog = require('./models/blog')
 const blogsRouter = require('./controllers/blogs')
 
 mongoose.connect(process.env.MONGODB_URI, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => {
+    logger.info('connected to MongoDb')
+  })
+  .catch((err) => {
+    logger.error('error connecting to MongoDb', err.message)
+  })
 
 app.use(cors())
 app.use(express.json())
