@@ -33,7 +33,6 @@ const favoriteBlog = (blogList) => {
 }
 
 const mostBlogs = (blogList) => {
-    // dictionary 
     // keys are authors names and values number of blogs they have
     const authors = {}
 
@@ -76,11 +75,37 @@ const mostBlogsWithLodash = (blogList) => {
     }
 }
 
+const mostLikes = (blogList) => {
+    // keys are authors names, values likes they have
+    const authors = {}
+    blogList.forEach(blog => {
+        if (authors.hasOwnProperty(blog.author)) {
+            authors[blog.author] += blog.likes
+        } else {
+            authors[blog.author] = blog.likes
+        }
+    })
+
+    let authorWithMostLikes, numOfLikes = 0
+    for (let author in authors) {
+        if (authors[author] > numOfLikes) {
+            numOfLikes = authors[author]
+            authorWithMostLikes = author
+        }
+    }
+
+    return {
+        author: authorWithMostLikes,
+        likes: numOfLikes
+    }
+}
+
 
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
     mostBlogs,
-    mostBlogsWithLodash
+    mostBlogsWithLodash,
+    mostLikes
 }
