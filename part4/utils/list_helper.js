@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 const dummy = (blogs) => {
     return 1
 }
@@ -30,8 +32,55 @@ const favoriteBlog = (blogList) => {
     return (({author, likes, title}) => ({author, likes, title}))(favorite)
 }
 
+const mostBlogs = (blogList) => {
+    // dictionary 
+    // keys are authors names and values number of blogs they have
+    const authors = {}
+
+    blogList.forEach(blog => {
+        if (authors.hasOwnProperty(blog.author)) {
+            authors[blog.author] ++
+        } else {
+            authors[blog.author] = 1
+        }
+    })
+
+    let authorWithMostBlogs, numOfBlogs = 0
+    for (let author in authors) {
+        if (authors[author] > numOfBlogs) {
+            numOfBlogs = authors[author]
+            authorWithMostBlogs = author
+        }
+    }
+
+    return {
+        author: authorWithMostBlogs,
+        blogs: numOfBlogs
+    }
+}
+
+const mostBlogsWithLodash = (blogList) => {
+    const authors = _.countBy(blogList, (blog) => blog.author)
+
+    let authorWithMostBlogs, numOfBlogs = 0
+    for (let author in authors) {
+        if (authors[author] > numOfBlogs) {
+            numOfBlogs = authors[author]
+            authorWithMostBlogs = author
+        }
+    }
+
+    return {
+        author: authorWithMostBlogs,
+        blogs: numOfBlogs
+    }
+}
+
+
 module.exports = {
     dummy,
     totalLikes,
-    favoriteBlog
+    favoriteBlog,
+    mostBlogs,
+    mostBlogsWithLodash
 }
