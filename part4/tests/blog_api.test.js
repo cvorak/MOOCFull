@@ -81,6 +81,18 @@ test('when likes is missing from blog it defaults to zero', async () => {
     expect(blogWithDefaultedLikes[0].likes).toBe(0)
 })
 
+test('if title and url are missing from blog bad request is returned', async () => {
+    const blogWithoutUrlAndTitle = {
+        author: 'Test Author'
+    }
+
+    await api
+        .post('/api/blogs')
+        .send(blogWithoutUrlAndTitle)
+        .expect(400)
+        .expect('Content-Type', /application\/json/)
+})
+
 
 afterAll(() => {
     mongoose.connection.close()
