@@ -34,7 +34,13 @@ test('a specific blog is within the returned blogs', async () => {
     expect(titles).toContain('TDD harms architecture')
 })
 
+test('unique identifier property of blog is id', async() => {
+    const response = await api.get('/api/blogs')
 
+    const blog = response.body[0]
+
+    expect(blog.id).toBeDefined()
+})
 
 
 afterAll(() => {
