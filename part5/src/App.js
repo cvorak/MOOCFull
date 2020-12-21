@@ -8,7 +8,9 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-
+  const [title, setTitle] = useState('')
+  const [author, setAuthor] = useState('')
+  const [url, setUrl] = useState('')
   useEffect(() => {
     blogService.getAll().then(blogs =>
       setBlogs(blogs)
@@ -16,9 +18,11 @@ const App = () => {
   }, [])
 
   useEffect(() => {
-    const user = window.localStorage.getItem('loggedInUser')
-    if (user) {
-      setUser(JSON.parse(user))
+    const userJson = window.localStorage.getItem('loggedInUser')
+    if (userJson) {
+      const user = JSON.parse(userJson)
+      setUser(user)
+      blogService.setToken(user.token)
     }
   }, [])
 
@@ -64,17 +68,70 @@ const App = () => {
     </div>
   )
 
+  const handleCreateNew = async (event) => {
+    event.preventDefault()
+
+    const newBlog = {
+      title: title,
+      url: url,
+      author: author
+    }
+
+    const returnedBlog = await blogService.create(newBlog)
+    setBlogs(blogs.concat(returnedBlog))
+    setUrl('')
+    setAuthor('')
+    setTitle('')
+        
+  }
+
+  const createNew = () =>  (
+    <>
+    <h2>create new</h2>
+    <form onSubmit={handleCreateNew}>
+      title:  
+      <input 
+      type='text'
+      name='Title'
+      value={title}
+      onChange={({target}) => setTitle(target.value)}
+      />
+      <br></br>
+      author:  
+      <input 
+      type='text'
+      name='Author'
+      value={author}
+      onChange={({target}) => setAuthor(target.value)}
+      />
+      <br></br>
+      url:  
+      <input 
+      type='text'
+      name='Url'
+      value={url}
+      onChange={({target}) => setUrl(target.value)}
+      />  
+      <br></br>
+      <button type='submit'>create</button>
+    </form>
+    </>
+  )
+
   const blogList = () => (
     <>
-      <h2>blogs</h2>
-      {user.name} logged in
-      <button onClick={handleLogout}>log out</button>
+    <h2>blogs</h2>
+    {user.name} logged in       <button onClick={handleLogout}>log out</button>
+    {createNew()}   
+      
 
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
       )}
     </>
   )
+
+  
 
   return (
     <div>
