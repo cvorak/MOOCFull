@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import Blog from './components/Blog'
+import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 import Notification from './components/Notification'
+import Togglable from './components/Togglable'
 import blogService from './services/blogs'
 import loginService from './services/login'
 
@@ -9,10 +12,10 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
+
   const [message, setMessage] = useState('')
+
+  const blogRef = useRef()
 
   useEffect(() => {
     blogService.getAll().then(blogs =>
@@ -29,21 +32,19 @@ const App = () => {
     }
   }, [])
 
-  const handleLogin = async (event) => {
-    event.preventDefault()
+  const handleLogin = async (userToLogIn) => {
     try {
-      const user = await loginService.login({ username, password })
+      const user = await loginService.login(userToLogIn)
       window.localStorage.setItem('loggedInUser', JSON.stringify(user))
       setUser(user)
-      setUsername('')
-      setPassword('')
+      
     }
     catch (exception) {
       setMessage('Wrong credentials')
       setTimeout(() => {
         setMessage(null)
       }, 5000)
-    } 
+    }
   }
 
   const handleLogout = () => {
@@ -74,22 +75,14 @@ const App = () => {
     </div>
   )
 
-  const handleCreateNew = async (event) => {
-    event.preventDefault()
+  const handleCreateNew = async (newBlog) => {
     try {
-      const newBlog = {
-        title: title,
-        url: url,
-        author: author
-      }
-
       const returnedBlog = await blogService.create(newBlog)
+      blogRef.current.toggleVisibility()
       setBlogs(blogs.concat(returnedBlog))
-      setUrl('')
-      setAuthor('')
-      setTitle('')
-      setMessage(`a new blog ${title} by ${author} added`)
-      setTimeout(() => {setMessage('')}, 5000)
+
+      // setMessage(`a new blog ${title} by ${author} added`)
+      // setTimeout(() => {setMessage('')}, 5000)
     }
     catch (exception) {
       setMessage(exception)
@@ -99,45 +92,13 @@ const App = () => {
     }
   }
 
-  const createNew = () => (
-    <>
-      <h2>create new</h2>
-      <form onSubmit={handleCreateNew}>
-        title:
-      <input
-          type='text'
-          name='Title'
-          value={title}
-          onChange={({ target }) => setTitle(target.value)}
-        />
-        <br></br>
-      author:
-      <input
-          type='text'
-          name='Author'
-          value={author}
-          onChange={({ target }) => setAuthor(target.value)}
-        />
-        <br></br>
-      url:
-      <input
-          type='text'
-          name='Url'
-          value={url}
-          onChange={({ target }) => setUrl(target.value)}
-        />
-        <br></br>
-        <button type='submit'>create</button>
-      </form>
-    </>
-  )
-
   const blogList = () => (
     <>
       <h2>blogs</h2>
       {user.name} logged in       <button onClick={handleLogout}>log out</button>
-      {createNew()}
-
+      <Togglable ref={blogRef} buttonName={'add new blog'}>
+        <BlogForm saveNewBlog={handleCreateNew} />
+      </Togglable>
 
       {blogs.map(blog =>
         <Blog key={blog.id} blog={blog} />
@@ -152,7 +113,7 @@ const App = () => {
       <Notification message={message} />
       {user ?
         blogList() :
-        loginForm()
+        <LoginForm logUserIn={handleLogin} />
       }
     </div>
   )
