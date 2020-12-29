@@ -78,7 +78,12 @@ const App = () => {
     })
 
     setBlogs(updatedBlogs)
+  }
 
+  const removeBlog = async (id) => {
+    await blogService.remove(id)
+    const updatedBlogs = blogs.filter(blog => blog.id !== id)
+    setBlogs(updatedBlogs)
   }
 
   const blogList = () => (
@@ -93,7 +98,10 @@ const App = () => {
       {blogs
         .sort((a, b) => b.likes - a.likes)
         .map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={handleLike}/>
+        <Blog key={blog.id} blog={blog} 
+          likeBlog={handleLike}
+          removeBlog={removeBlog}
+        />
       )}
     </>
   )
