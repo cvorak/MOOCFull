@@ -9,8 +9,6 @@ import loginService from './services/login'
 
 const App = () => {
   const [blogs, setBlogs] = useState([])
-  const [username, setUsername] = useState('')
-  const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
 
   const [message, setMessage] = useState('')
@@ -52,37 +50,14 @@ const App = () => {
     window.localStorage.removeItem('loggedInUser')
   }
 
-  const loginForm = () => (
-    <div>
-      <h2>log in to application</h2>
-      <form onSubmit={handleLogin}>
-        username
-        <input
-          type='text'
-          value={username}
-          name="Username"
-          onChange={({ target }) => setUsername(target.value)}
-        />
-        password
-        <input
-          type='password'
-          name="Password"
-          value={password}
-          onChange={({ target }) => setPassword(target.value)}
-        />
-        <button type='submit'>Log in</button>
-      </form>
-    </div>
-  )
-
   const handleCreateNew = async (newBlog) => {
     try {
       const returnedBlog = await blogService.create(newBlog)
       blogRef.current.toggleVisibility()
       setBlogs(blogs.concat(returnedBlog))
 
-      // setMessage(`a new blog ${title} by ${author} added`)
-      // setTimeout(() => {setMessage('')}, 5000)
+      setMessage(`a new blog added`)
+      setTimeout(() => {setMessage('')}, 5000)
     }
     catch (exception) {
       setMessage(exception)
