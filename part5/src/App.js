@@ -67,16 +67,31 @@ const App = () => {
     }
   }
 
+  const handleLike = async (changedBlog) => {
+    const returnedBlog = await blogService.update(changedBlog)
+    returnedBlog.user = changedBlog.user
+    const updatedBlogs = blogs.map(blog => {
+      if (blog.id !== returnedBlog.id)
+        return blog
+      else 
+        return returnedBlog
+    })
+
+    setBlogs(updatedBlogs)
+
+  }
+
   const blogList = () => (
     <>
       <h2>blogs</h2>
-      {user.name} logged in       <button onClick={handleLogout}>log out</button>
+      {user.name} logged in 
+      <button onClick={handleLogout}>log out</button>
       <Togglable ref={blogRef} buttonName={'add new blog'}>
         <BlogForm saveNewBlog={handleCreateNew} />
       </Togglable>
 
       {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} likeBlog={handleLike}/>
       )}
     </>
   )
