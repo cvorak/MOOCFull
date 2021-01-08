@@ -11,7 +11,7 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
   const [visible, setVisible] = useState(false)
   const [buttonName, setButtonName] = useState('view')
 
-  const showWhenVisible = {display : visible ? '' : 'none'} 
+  const showWhenVisible = { display: visible ? '' : 'none' }
 
   const toggleVisible = () => {
     setVisible(!visible)
@@ -38,16 +38,18 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
 
   return (
     <div style={blogStyle}>
-      {blog.title} {blog.author}
+      <div className='titleAuthor'>
+        {blog.title} {blog.author}
+      </div>
       <button onClick={toggleVisible}>{buttonName}</button>
-      <div style={showWhenVisible}>
+      <div style={showWhenVisible} className='urlLikes'>
         {blog.url}
-        <br/>
+        <br />
         likes {blog.likes}
         <button onClick={handleLike}>like</button>
-        <br/>
+        <br />
         {blog.user.name}
-        <br/>
+        <br />
         <button onClick={handleRemove}>remove</button>
       </div>
     </div>
