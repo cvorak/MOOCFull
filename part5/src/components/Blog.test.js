@@ -5,9 +5,13 @@ import Blog from './Blog'
 
 
 describe('<Blog />', () => {
-    let component
+    let component, likeBlog, removeBlog
+    
 
     beforeEach(() => {
+        likeBlog = jest.fn()
+        removeBlog = jest.fn()
+
         const blog = {
             likes: 3,
             author: 'Testa',
@@ -15,9 +19,6 @@ describe('<Blog />', () => {
             url: 'www.test.com',
             user: 'testuser',
         }
-
-        const likeBlog = jest.fn()
-        const removeBlog = jest.fn()
 
         component = render(
             <Blog
@@ -47,5 +48,14 @@ describe('<Blog />', () => {
         fireEvent.click(button)
 
         expect(div).not.toHaveStyle('display:none')
+    })
+
+    test('calls event handler when like button is clicked', () => {
+        const likeButton = component.container.querySelector('.likeButton')
+        
+        fireEvent.click(likeButton)
+        fireEvent.click(likeButton)
+
+        expect(likeBlog.mock.calls).toHaveLength(2)
     })
 })
