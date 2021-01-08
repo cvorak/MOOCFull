@@ -25,7 +25,7 @@ const BlogForm = ({ saveNewBlog }) => {
             <h2>create new</h2>
             <form onSubmit={handleSubmit}>
                 title:
-      <input
+      <input id='title'
                     type='text'
                     name='Title'
                     value={title}
@@ -33,7 +33,7 @@ const BlogForm = ({ saveNewBlog }) => {
                 />
                 <br></br>
       author:
-      <input
+      <input id='author'
                     type='text'
                     name='Author'
                     value={author}
@@ -41,7 +41,7 @@ const BlogForm = ({ saveNewBlog }) => {
                 />
                 <br></br>
       url:
-      <input
+      <input id='url'
                     type='text'
                     name='Url'
                     value={url}
