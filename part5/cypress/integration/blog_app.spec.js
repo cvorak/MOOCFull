@@ -59,4 +59,10 @@ describe('When logged in', function() {
 
         cy.contains('likes 1')
     })
+
+    it('User can delete his own blog', function() {
+        cy.get('.toggleButton').click()
+        cy.get('#remove').click()
+        cy.should('not.contain', 'test title test author')
+    })
 })
