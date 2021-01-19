@@ -52,4 +52,11 @@ describe('When logged in', function() {
 
         cy.contains('test title test author')
     })
+
+    it('User can like a blog', function() {
+        cy.get('.toggleButton').click()
+        cy.get('.likeButton').click()
+
+        cy.contains('likes 1')
+    })
 })
