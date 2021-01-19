@@ -14,55 +14,92 @@ describe('Blog app', function () {
     it('Login form is shown', function () {
         cy.contains('log in to application')
     })
-})
 
-describe('Login', function () {
-    it('succeeds with correct credentials', function () {
-        cy.get('#username').type('cvorak')
-        cy.get('#password').type('razorfish')
-        cy.get('#login').click()
 
-        cy.contains('Nikola Cvorovic logged in')
-    })
+    describe('Login', function () {
+        it('succeeds with correct credentials', function () {
+            cy.get('#username').type('cvorak')
+            cy.get('#password').type('razorfish')
+            cy.get('#login').click()
 
-    it('fails with wrong credentials', function () {
-        cy.get('#logout').click()
-        cy.get('#username').type('cvorak')
-        cy.get('#password').type('ovoono')
-        cy.get('#login').click()
+            cy.contains('Nikola Cvorovic logged in')
+        })
 
-        cy.contains('Wrong credentials')
-    })
-})
+        it('fails with wrong credentials', function () {
+            cy.get('#username').type('cvorak')
+            cy.get('#password').type('ovoono')
+            cy.get('#login').click()
 
-describe('When logged in', function() {
-    beforeEach(function() {
-        cy.request('POST', 'http://localhost:3000/api/login', {username: 'cvorak', password: 'razorfish'}).then(res => {
-            window.localStorage.setItem('loggedInUser', JSON.stringify(res.body))
-            cy.visit('http://localhost:3000')
+            cy.contains('Wrong credentials')
         })
     })
 
-    it('A blog can be created', function() {
-        cy.contains('add new blog').click()
-        cy.get('#title').type('test title')
-        cy.get('#author').type('test author')
-        cy.get('#url').type('test url')
-        cy.get('#create').click()
+    describe('When logged in', function () {
+        beforeEach(function () {
+            cy.login({ username: 'cvorak', password: 'razorfish' })
+        })
 
-        cy.contains('test title test author')
-    })
+        it('A blog can be created', function () {
+            cy.contains('add new blog').click()
+            cy.get('#title').type('test title')
+            cy.get('#author').type('test author')
+            cy.get('#url').type('test url')
+            cy.get('#create').click()
 
-    it('User can like a blog', function() {
-        cy.get('.toggleButton').click()
-        cy.get('.likeButton').click()
+            cy.contains('test title test author')
+        })
 
-        cy.contains('likes 1')
-    })
+        it('User can like a blog', function () {
+            cy.createBlog({
+                title: 'title',
+                author: 'author',
+                url: 'url'
+            })
+            cy.visit('http://localhost:3000')
+            cy.get('.toggleButton').click()
+            cy.get('.likeButton').click()
 
-    it('User can delete his own blog', function() {
-        cy.get('.toggleButton').click()
-        cy.get('#remove').click()
-        cy.should('not.contain', 'test title test author')
+            cy.contains('likes 1')
+        })
+
+        it('User can delete his own blog', function () {
+            cy.createBlog({
+                title: 'title',
+                author: 'author',
+                url: 'url'
+            })
+            cy.visit('http://localhost:3000')
+            cy.get('.toggleButton').click()
+            cy.get('#remove').click()
+            cy.should('not.contain', 'test title test author')
+        })
+
+        it('Blogs are ordered by likes descending', function() {
+            cy.createBlog({
+                title: 'title3',
+                author: 'author3',
+                url: 'url3',
+                likes: 3
+            })
+            cy.createBlog({
+                title: 'title2',
+                author: 'author2',
+                url: 'url2',
+                likes: 2
+            })
+            cy.createBlog({
+                title: 'title1',
+                author: 'author1',
+                url: 'url1',
+                likes: 1
+            })
+
+            cy.visit('http://localhost:3000')
+            cy.get('.titleAuthor').then(items => {
+                expect(items[0]).to.contain.text('title3 author3')
+                expect(items[1]).to.contain.text('title2 author2')
+                expect(items[2]).to.contain.text('title1 author1')
+            })
+        })
     })
 })
