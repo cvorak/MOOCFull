@@ -34,3 +34,22 @@ describe('Login', function () {
         cy.contains('Wrong credentials')
     })
 })
+
+describe('When logged in', function() {
+    beforeEach(function() {
+        cy.request('POST', 'http://localhost:3000/api/login', {username: 'cvorak', password: 'razorfish'}).then(res => {
+            window.localStorage.setItem('loggedInUser', JSON.stringify(res.body))
+            cy.visit('http://localhost:3000')
+        })
+    })
+
+    it('A blog can be created', function() {
+        cy.contains('add new blog').click()
+        cy.get('#title').type('test title')
+        cy.get('#author').type('test author')
+        cy.get('#url').type('test url')
+        cy.get('#create').click()
+
+        cy.contains('test title test author')
+    })
+})
