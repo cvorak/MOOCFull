@@ -60,7 +60,7 @@ const App = () => {
       setTimeout(() => {setMessage('')}, 5000)
     }
     catch (exception) {
-      setMessage(exception)
+      setMessage('djokson')
       setTimeout(() => {
         setMessage(null)
       }, 5000)
