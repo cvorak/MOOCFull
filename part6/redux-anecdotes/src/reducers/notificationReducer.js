@@ -1,16 +1,22 @@
-const initialNotification = 'test notification'
-
-export const submitNotification = (text) => {
+export const setNotification = (text) => {
     return {
-        type: 'NOTIFICATION',
+        type: 'SET_NOTIFICATION',
         text
     }
 }
 
-const reducer = (state = initialNotification, action) => {
+export const removeNotification = () => {
+    return {
+        type: 'REMOVE_NOTIFICATION'
+    }
+}
+
+const reducer = (state = '', action) => {
     switch(action.type) {
-        case 'NOTIFICATION':
+        case 'SET_NOTIFICATION':
             return action.text
+        case 'REMOVE_NOTIFICATION':
+            return ''
         default: 
             return state
     }
