@@ -70,7 +70,6 @@ test('blog without title is not added', async() => {
     .expect(400)
 
   const blogsAtEnd = await helper.blogsInDb()
-  console.log(blogsAtEnd)
 
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
@@ -79,6 +78,24 @@ test('unique identifier of the blog post is named id', async () => {
   const blogsInDb = await helper.blogsInDb()
 
   expect(blogsInDb[0].id).toBeDefined()
+})
+
+test('if likes prop is missing from the request, it defaults to 0', async () => {
+  const newBlog = {
+    author: 'cvorak',
+    url: 'www.testing.com'
+  }
+
+  await api 
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(201)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  const savedBlog = blogsAtEnd.find(b => b.url === 'www.testing.com')
+
+  expect(savedBlog.likes).toBeDefined()
+  expect(savedBlog.likes).toBe(0)
 })
 
 afterAll(() => {
