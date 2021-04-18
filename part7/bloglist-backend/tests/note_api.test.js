@@ -47,8 +47,6 @@ test("a valid blog can be added", async () => {
     .expect(201)
     .expect('Content-Type', /application\/json/)
 
-  const response = await api.get("/api/blogs")
-
   const blogsAtEnd = await helper.blogsInDb();
   expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
 
@@ -61,11 +59,10 @@ test('blog without title is not added', async() => {
   const newBlog = {
     author: 'Cvo',
     url: 'www.cv.com',
-    likes: 0
   }
 
   await api
-    .post('api/blogs')
+    .post('/api/blogs')
     .send(newBlog)
     .expect(400)
 
@@ -83,7 +80,8 @@ test('unique identifier of the blog post is named id', async () => {
 test('if likes prop is missing from the request, it defaults to 0', async () => {
   const newBlog = {
     author: 'cvorak',
-    url: 'www.testing.com'
+    url: 'www.testing.com',
+    title: 'test title'
   }
 
   await api 
@@ -92,10 +90,46 @@ test('if likes prop is missing from the request, it defaults to 0', async () => 
     .expect(201)
 
   const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+
   const savedBlog = blogsAtEnd.find(b => b.url === 'www.testing.com')
 
   expect(savedBlog.likes).toBeDefined()
   expect(savedBlog.likes).toBe(0)
+})
+
+test('if title is missing, response is Bad Request(400)', async () => {
+  const newBlogWithoutTitle = {
+    author: 'cvorek',
+    url: 'www.tralala.com'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutTitle)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+  console.log(blogsAtEnd)
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test('if url is missing, response is Bad Request(400)', async () => {
+  const newBlogWithoutUrl = {
+    author: 'cvorek',
+    title: 'example title'
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlogWithoutUrl)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
 })
 
 afterAll(() => {

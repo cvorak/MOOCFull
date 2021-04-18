@@ -7,7 +7,18 @@ blogsRouter.get("/", async (request, response) => {
 });
 
 blogsRouter.post("/", async (request, response) => {
-  const newBlog = new Blog(request.body);
+  const blogToSave = request.body
+
+  if (!blogToSave.url || !blogToSave.title) {
+    response.status(400).send('Title or URL missing.')
+    return
+  }
+
+  if (!blogToSave.likes) {
+    blogToSave.likes = 0
+  }
+  
+  const newBlog = new Blog(blogToSave);
 
   try {
     const savedBlog = await newBlog.save()
