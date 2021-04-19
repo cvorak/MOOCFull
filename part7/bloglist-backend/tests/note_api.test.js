@@ -140,6 +140,38 @@ describe('viewing a specific blog', () => {
   })
 })
 
+describe('deleting a blog', () => {
+  test('succeeds with a valid id', async () => {
+    let blogsInDb = await helper.blogsInDb()
+    const lengthOnStart = blogsInDb.length
+    const blogToDelete = blogsInDb[0]
+
+    const id = blogToDelete.id
+
+    await api
+      .delete(`/api/blogs/${id}`)
+      .expect(204)
+
+    blogsInDb = await helper.blogsInDb()
+    expect(blogsInDb).toHaveLength(lengthOnStart - 1)
+    const titles = blogsInDb.map(b => b.title)
+    expect(titles).not.toContain(blogToDelete.title)
+  })
+
+  test('returns 204 for an invalid id', async () => {
+    let blogsInDb = await helper.blogsInDb()
+    const lengthAtStart = blogsInDb.length
+    const id = await helper.validNonexistingId()
+    
+    await api
+    .delete(`/api/blogs/${id}`)
+    .expect(204)
+    
+    blogsInDb = await helper.blogsInDb()
+    expect(blogsInDb).toHaveLength(lengthAtStart)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close();
 });
