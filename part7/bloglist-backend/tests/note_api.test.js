@@ -172,6 +172,43 @@ describe('deleting a blog', () => {
   })
 })
 
+describe('updating a blog', () => {
+  test('succeeds with a valid id', async () => {
+    let blogsInDb = await helper.blogsInDb()
+    const blogToUpdate = blogsInDb[0]
+    const id = blogToUpdate.id
+    blogToUpdate.title = 'This is an updated title!'
+
+    await api
+      .put(`/api/blogs/${blogToUpdate.id}`)
+      .send(blogToUpdate)
+      .expect(204)
+
+    
+    blogsInDb = await helper.blogsInDb()
+    const updatedBlog = blogsInDb.filter(b => b.id === id)[0]
+
+    expect(updatedBlog.title).toEqual(blogToUpdate.title)
+  })
+
+  test('returns 204 with invalid id', async () => {
+    let blogsInDb = await helper.blogsInDb()
+    const titlesAtStart = blogsInDb.map(b => b.title)
+    const validId = await helper.validNonexistingId()
+    const blogToUpdate = blogsInDb[0]
+    blogToUpdate.title = 'This is an updated title!'
+
+    await api
+      .put(`/api/blogs/${validId}`)
+      .send(blogToUpdate)
+      .expect(204)
+
+    blogsInDb = await helper.blogsInDb()
+    const titlesAtEnd = blogsInDb.map(b => b.title)
+    expect(titlesAtStart).toEqual(titlesAtEnd)
+  })
+})
+
 afterAll(() => {
   mongoose.connection.close();
 });
