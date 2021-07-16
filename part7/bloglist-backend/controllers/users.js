@@ -20,4 +20,9 @@ usersRouter.post('/', async (request, response) => {
     response.json(savedUser)
 })
 
+usersRouter.get('/', async (reqest, response) => {
+    const users = await User.find({})
+    response.json(users)
+})
+
 module.exports = usersRouter
